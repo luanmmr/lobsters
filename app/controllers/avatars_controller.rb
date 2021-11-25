@@ -7,16 +7,17 @@ class AvatarsController < ApplicationController
 
   def expire
     expired = 0
+    logger = Rails.logger
 
     Dir.entries(CACHE_DIR).select {|f|
       f.match(/\A#{@user.username}-(\d+)\.png\z/)
     }.each do |f|
       begin
-        Rails.logger.debug "Expiring #{f}"
+        logger.debug "Expiring #{f}"
         File.unlink("#{CACHE_DIR}/#{f}")
         expired += 1
       rescue => e
-        Rails.logger.error "Failed expiring #{f}: #{e}"
+        logger.error "Failed expiring #{f}: #{e}"
       end
     end
 
